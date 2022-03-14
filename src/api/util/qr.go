@@ -1,7 +1,6 @@
 package util
 
 import (
-	_ "github.com/njitacm/sig-track/src/api/util"
 	qrcode "github.com/skip2/go-qrcode"
 )
 

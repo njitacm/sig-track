@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
-
-	L "github.com/njitacm/sig-track/src/api/util"
 )
 
 const (
@@ -29,10 +28,11 @@ func root(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	L.QRCodeGen("ucid", "qr.png")
-
+	// L.QRCodeGen("ucid", "qr.png")
 	port := strconv.Itoa(PORT)
+
 	http.HandleFunc("/", root)
-	err := http.ListenAndServe(":"+port, nil)
-	L.Check(err)
+
+	fmt.Printf("http://localhost:%s\n")
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
