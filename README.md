@@ -5,7 +5,8 @@ Tracks attendance for sig-meetings (with little overhead)
 
 ## :hammer: How to Build
 - Prereqs:
-    - Be sure to add `valid-sigs.json` with a json string slice with the name of the sig ex. [ "swe", "algo", "sec" ] 
+    - Be sure to add `valid-sigs.json` in `/src/front-end` with a json string slice with the name of the sig ex. [ "swe", "algo", "sec" ] 
+    - Be sure to have `GOOGLE_CLIENT_ID` && `GOOGLE_CLIENT_SECRET` as env variables!
 
 ```sh
 # Change directory to repo 
@@ -45,3 +46,8 @@ make
     - **[getting-started-with-oauth2](https://www.youtube.com/watch?v=OdyXIi6DGYw)**  <-- BEST
     - [authentication-authorization-in-oauth2:golang](https://www.youtube.com/watch?v=Vmi3trk0rCk)
     - [getting-started,code walkthrough](https://www.youtube.com/watch?v=PdpQJsR-BpE)
+- URL Dyno Routing
+    - [Parsing Queries](https://www.youtube.com/watch?v=cl7_ouTMFh0)
+    - [Effective Go: Writing Web Applications](https://go.dev/doc/articles/wiki/)
+- Go Env Variables
+    - [gobyexample: env vars](https://gobyexample.com/environment-variables)

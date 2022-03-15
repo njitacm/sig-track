@@ -17,14 +17,12 @@ type Ret struct {
 }
 
 func root(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Fprintf(w, "Hello World!")
-	// dec := json.NewEncoder(w)
-	// dec
-
-	// enc := json.NewEncoder(w)
-	// enc.Encode()
-
+	switch r.Method {
+	case "POST":
+		fmt.Fprintf(w, "bruh")
+	default:
+		fmt.Fprintf(w, "POST plz!")
+	}
 }
 
 func main() {
@@ -33,6 +31,6 @@ func main() {
 
 	http.HandleFunc("/", root)
 
-	fmt.Printf("http://localhost:%s\n")
+	fmt.Printf("http://localhost:%s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

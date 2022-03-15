@@ -2,6 +2,7 @@
 *.png
 *.o
 *.json
+src/*/conf.go
 
 # Binaries for programs and plugins
 *.exe
