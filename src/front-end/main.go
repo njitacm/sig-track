@@ -12,14 +12,26 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
+	"time"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+
+	"github.com/gorilla/sessions"
 )
 
 const (
 	PORT = 10234
 )
+
+type POSTREQ struct {
+	Sig, Ucid, Time string
+}
+
+type Template struct {
+	Sig, Favicon, Redirect string
+}
 
 var (
 	google0authConfig = &oauth2.Config{
@@ -30,7 +42,12 @@ var (
 		Endpoint:     google.Endpoint,
 	}
 	randomState = getToken(12)
+	store       = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 )
+
+func EnableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
 
 func getToken(length int) string {
 	randomBytes := make([]byte, 32)
@@ -41,10 +58,6 @@ func getToken(length int) string {
 	return base32.StdEncoding.EncodeToString(randomBytes)[:length]
 }
 
-type Template struct {
-	Sig, Favicon string
-}
-
 // Check : Func to do error checking
 func Check(err error) {
 	if err != nil {
@@ -53,11 +66,27 @@ func Check(err error) {
 }
 
 func handleLogin(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL.RawQuery)
+	EnableCors(&w)
 	url := google0authConfig.AuthCodeURL(randomState)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
 func handleCallback(w http.ResponseWriter, r *http.Request) {
+	EnableCors(&w)
+	session, err := store.Get(r, "session-name")
+	Check(err)
+
+	sig, ok := session.Values["sig"].(string)
+	if !ok {
+		fmt.Println("couldn't get session")
+		return
+	}
+
+	fmt.Fprintf(w, "%v\n", sig)
+
+	var res map[string]interface{}
+
 	if r.FormValue("state") != randomState {
 		fmt.Println("state not valid")
 		return
@@ -66,13 +95,37 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 	token, err := google0authConfig.Exchange(context.Background(), r.FormValue("code"))
 	Check(err)
 
+	// fmt.Fprintf(w, "%v\n", r.FormValue("code"))
+
 	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 	Check(err)
+
+	// fmt.Fprintf(w, "%v\n", token.AccessToken)
 
 	content, err := ioutil.ReadAll(resp.Body)
 	Check(err)
 
-	fmt.Fprintf(w, "%s", string(content))
+	// fmt.Fprintf(w, "%v\n", r.URL.Query().Get("email"))
+
+	// fmt.Fprintf(w, "%s\n", string(content))
+
+	json.Unmarshal(content, &res)
+	email := fmt.Sprintf("%s", res["email"])
+	// fmt.Fprintf(w, "%s", email)
+
+	checkIn := POSTREQ{
+		Sig:  sig,
+		Ucid: email[:strings.Index(email, "@")],
+		Time: time.Now().UTC().Format(time.UnixDate),
+	}
+
+	fmt.Println(checkIn)
+	// fmt.Fprintf(w, "%v\n", checkIn)
+	// json_data, err := json.Marshal(checkIn)
+	// Check(err)
+
+	// resp, err = http.Post("", "application/json", bytes.NewBuffer(json_data))
+	// Check(err)
 
 }
 
@@ -105,26 +158,32 @@ func main() {
 
 	// does dynamic url routing
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+
+		EnableCors(&w)
 		// gets the sig from the url path
 		sig := r.URL.Path[1:]
 		// checks if sig in the set, if so the magic starts to begin
 		_, exists := validSigs[sig]
 		if exists {
-			switch r.Method {
-			case "POST":
-				fmt.Fprintf(w, "do something")
-			default:
-				tpl, err := template.ParseFiles("templates/layout.html")
-				Check(err)
+			session, err := store.Get(r, "session-name")
+			Check(err)
 
-				vals := Template{
-					Sig:     sig,
-					Favicon: "http://jerseyctf.com/assets/img/white_hollow_acm.png",
-				}
-				tpl.ExecuteTemplate(w, "startcore", vals)
+			session.Values["sig"] = sig
+			session.Save(r, w)
 
-				tpl.ExecuteTemplate(w, "end", nil)
+			tpl, err := template.ParseFiles("templates/layout.html")
+			Check(err)
+
+			vals := Template{
+				Sig:      sig,
+				Favicon:  "http://jerseyctf.com/assets/img/white_hollow_acm.png",
+				Redirect: "/login",
 			}
+			tpl.ExecuteTemplate(w, "startcore", vals)
+
+			tpl.ExecuteTemplate(w, "end", nil)
+
+			fmt.Println(r.URL.RawQuery)
 		} else {
 			fmt.Fprintf(w, "<html><p>%s is not a valid sig! (But you can create it if you want!)</p></html>", sig)
 		}
