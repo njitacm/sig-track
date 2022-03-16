@@ -47,7 +47,12 @@ make
     - [authentication-authorization-in-oauth2:golang](https://www.youtube.com/watch?v=Vmi3trk0rCk)
     - [getting-started,code walkthrough](https://www.youtube.com/watch?v=PdpQJsR-BpE)
 - URL Dyno Routing
-    - [Parsing Queries](https://www.youtube.com/watch?v=cl7_ouTMFh0)
     - [Effective Go: Writing Web Applications](https://go.dev/doc/articles/wiki/)
 - Go Env Variables
     - [gobyexample: env vars](https://gobyexample.com/environment-variables)
+- url parsing
+    - [gobyexample: url parse](https://gobyexample.com/url-parsing)
+    - [Parsing Queries](https://www.youtube.com/watch?v=cl7_ouTMFh0)
+- Sessions
+    - [Go Sessions](https://gowebexamples.com/sessions/)
+    - [Gorilla Sessions](https://github.com/gorilla/sessions)

@@ -22,16 +22,9 @@ import (
 )
 
 const (
-	PORT = 10234
+	PORT      = 10234
+	BENDPOINT = "ec2-3-21-33-128.us-east-2.compute.amazonaws.com"
 )
-
-type POSTREQ struct {
-	Sig, Ucid, Time string
-}
-
-type Template struct {
-	Sig, Favicon, Redirect string
-}
 
 var (
 	google0authConfig = &oauth2.Config{
@@ -44,6 +37,14 @@ var (
 	randomState = getToken(12)
 	store       = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 )
+
+type POSTREQ struct {
+	Sig, Ucid, Time string
+}
+
+type Template struct {
+	Sig, Favicon string
+}
 
 func EnableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
@@ -65,53 +66,64 @@ func Check(err error) {
 	}
 }
 
+func CheckHandler(err error, errMsg string, w http.ResponseWriter, r *http.Request) {
+	if err != nil {
+		fmt.Fprintf(w, "something up with %s: %v", errMsg, err)
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+}
+
+// handleLogin: does the google oauth2 authorization
 func handleLogin(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(r.URL.RawQuery)
 	EnableCors(&w)
 	url := google0authConfig.AuthCodeURL(randomState)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
 
+// handleCallback: after successful connections
 func handleCallback(w http.ResponseWriter, r *http.Request) {
+
+	// get template setup
+	tpl, err := template.ParseFiles("templates/layout.html")
+	Check(err)
+
+	// enable cors
 	EnableCors(&w)
 	session, err := store.Get(r, "session-name")
 	Check(err)
 
+	// Get sig value from session cookie
 	sig, ok := session.Values["sig"].(string)
 	if !ok {
-		fmt.Println("couldn't get session")
+		fmt.Fprintf(w, "couldn't get session")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
-
-	fmt.Fprintf(w, "%v\n", sig)
 
 	var res map[string]interface{}
 
 	if r.FormValue("state") != randomState {
 		fmt.Println("state not valid")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
 
 	token, err := google0authConfig.Exchange(context.Background(), r.FormValue("code"))
-	Check(err)
-
-	// fmt.Fprintf(w, "%v\n", r.FormValue("code"))
+	CheckHandler(err, "getting token", w, r)
 
 	resp, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
-	Check(err)
+	CheckHandler(err, "getting token", w, r)
 
-	// fmt.Fprintf(w, "%v\n", token.AccessToken)
+	defer resp.Body.Close()
 
 	content, err := ioutil.ReadAll(resp.Body)
 	Check(err)
 
-	// fmt.Fprintf(w, "%v\n", r.URL.Query().Get("email"))
-
-	// fmt.Fprintf(w, "%s\n", string(content))
-
 	json.Unmarshal(content, &res)
+
+	// convert email to string from any type
 	email := fmt.Sprintf("%s", res["email"])
-	// fmt.Fprintf(w, "%s", email)
 
 	checkIn := POSTREQ{
 		Sig:  sig,
@@ -120,12 +132,16 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println(checkIn)
-	// fmt.Fprintf(w, "%v\n", checkIn)
+
 	// json_data, err := json.Marshal(checkIn)
 	// Check(err)
 
-	// resp, err = http.Post("", "application/json", bytes.NewBuffer(json_data))
+	// resp, err = http.Post(BENDPOINT, "application/json", bytes.NewBuffer(json_data))
 	// Check(err)
+
+	fmt.Println()
+
+	tpl.ExecuteTemplate(w, "done", nil)
 
 }
 
@@ -159,33 +175,42 @@ func main() {
 	// does dynamic url routing
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
+		tpl, err := template.ParseFiles("templates/layout.html")
+		Check(err)
+		// enables cors
 		EnableCors(&w)
+
 		// gets the sig from the url path
 		sig := r.URL.Path[1:]
+		if len(sig) == 0 {
+			tpl.ExecuteTemplate(w, "done", nil)
+		}
+
 		// checks if sig in the set, if so the magic starts to begin
 		_, exists := validSigs[sig]
 		if exists {
+			// starts up a session
 			session, err := store.Get(r, "session-name")
 			Check(err)
 
+			// Adds key:sig = value:sig in session
 			session.Values["sig"] = sig
+			// Saves session
 			session.Save(r, w)
 
-			tpl, err := template.ParseFiles("templates/layout.html")
-			Check(err)
-
 			vals := Template{
-				Sig:      sig,
-				Favicon:  "http://jerseyctf.com/assets/img/white_hollow_acm.png",
-				Redirect: "/login",
+				Sig:     sig,
+				Favicon: "http://jerseyctf.com/assets/img/white_hollow_acm.png",
 			}
 			tpl.ExecuteTemplate(w, "startcore", vals)
 
 			tpl.ExecuteTemplate(w, "end", nil)
 
-			fmt.Println(r.URL.RawQuery)
+			// fmt.Println(r.URL.RawQuery)
 		} else {
-			fmt.Fprintf(w, "<html><p>%s is not a valid sig! (But you can create it if you want!)</p></html>", sig)
+			if len(sig) != 0 {
+				fmt.Fprintf(w, "<html><p>%s is not a valid sig! (But you can create it if you want!)</p></html>", sig)
+			}
 		}
 	})
 

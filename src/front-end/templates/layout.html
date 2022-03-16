@@ -23,7 +23,7 @@
 
     <div style="padding: 2% 0%">
         <h3 style="padding: 2% 0%">sig-{{.Sig}} attendance</h3>
-        <a href="{{.Redirect}}" class="btn btn-outline-primary"><span class="fa fa-google"></span> SignIn with
+        <a href="/login" class="btn btn-outline-primary"><span class="fa fa-google"></span> SignIn with
             Google</a>
     </div>
 {{end}}
@@ -40,21 +40,25 @@
                 src="http://jerseyctf.com/assets/img/github-logo.png" height="50px" alt="Github Repo"></a>
     </div>
 </footer>
-
 </html>
 {{end}}
 
 
+<!-- done => lots of code from: https://codepen.io/haniotis/pen/KwvYLO -->
 {{block "done" .}}
 <html>
 <head>
 <style>
     body {
-        width: 100vw;
-        height: 100vh;
+        margin: 0 auto;
+    }
+
+    .show {
         display: flex;
-        align-items: center;
         justify-content: center;
+        align-items: center;
+        flex-flow: column;
+        height: 85%;
     }
 
     .checkmark {
@@ -110,10 +114,20 @@
 </style>
 </head>
 <body>
+<div class="show">
 <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
     <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
     <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
 </svg>
-</body>
-</html>
+</div>
+{{template "end"}}
+{{end}}
+
+{{block "root" .}}
+<html>
+<head>
+
+</head>
+<body>
+{{template "end"}}
 {{end}}
