@@ -85,8 +85,7 @@ func handleLogin(w http.ResponseWriter, r *http.Request) {
 func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 	// get template setup
-	tpl, err := template.ParseFiles("templates/layout.html")
-	Check(err)
+	tpl := template.Must(template.ParseGlob("templates/*.html"))
 
 	// enable cors
 	EnableCors(&w)
@@ -175,8 +174,8 @@ func main() {
 	// does dynamic url routing
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
-		tpl, err := template.ParseFiles("templates/layout.html")
-		Check(err)
+		tpl := template.Must(template.ParseGlob("templates/*.html"))
+
 		// enables cors
 		EnableCors(&w)
 
@@ -202,14 +201,11 @@ func main() {
 				Sig:     sig,
 				Favicon: "http://jerseyctf.com/assets/img/white_hollow_acm.png",
 			}
-			tpl.ExecuteTemplate(w, "startcore", vals)
+			tpl.ExecuteTemplate(w, "attendance", vals)
 
-			tpl.ExecuteTemplate(w, "end", nil)
-
-			// fmt.Println(r.URL.RawQuery)
 		} else {
 			if len(sig) != 0 {
-				fmt.Fprintf(w, "<html><p>%s is not a valid sig! (But you can create it if you want!)</p></html>", sig)
+				fmt.Fprintf(w, "<html><p> <pre>%s</pre> is not a valid sig! (But you can create it if you want!)</p></html>", sig)
 			}
 		}
 	})
