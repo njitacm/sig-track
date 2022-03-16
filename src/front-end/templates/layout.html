@@ -10,20 +10,17 @@
     {{template "bootstrap-body-js"}}
     <div style="padding: 2% 0%; height: 85%;">
         <h3 style="padding: 2% 0%">sig-{{.Sig}} attendance</h3>
-        <a href="/login" class="btn btn-outline-primary"><span class="fa fa-google"></span> SignIn with
-            Google</a>
+        <a href="/login" class="btn btn-outline-primary"><span class="fa fa-google"></span> SignIn with Google</a>
     </div>
 {{template "foot"}}
 </body>
 </html>
 {{end}}
 
-
-<!-- done => lots of code from: https://codepen.io/haniotis/pen/KwvYLO -->
 {{block "done" .}}
 <html>
 <head>
-    {{template "headimports"}}
+{{template "headimports"}}
 <style>
     body {margin: 0 auto;}
     .show {display: flex;justify-content: center;align-items: center;flex-flow: column;height: 85%;}
