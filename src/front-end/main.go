@@ -24,13 +24,13 @@ import (
 
 const (
 	PORT      = 10234
-	BENDPOINT = "ec2-3-21-33-128.us-east-2.compute.amazonaws.com"
+	BENDPOINT = "http://ec2-3-21-33-128.us-east-2.compute.amazonaws.com"
 )
 
 var (
 	google0authConfig = &oauth2.Config{
-		// RedirectURL:  "http://localhost:10234/callback",
-		RedirectURL:  "http://sig-track.xyz/callback",
+		RedirectURL: "http://localhost:10234/oauth2/callback",
+		// RedirectURL:  "http://sig-track.xyz/callback",
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
@@ -142,8 +142,6 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 	_, err = http.Post(BENDPOINT, "application/json", bytes.NewBuffer(json_data))
 	Check(err)
 
-	fmt.Println()
-
 	tpl.ExecuteTemplate(w, "done", nil)
 
 }
@@ -171,9 +169,9 @@ func main() {
 		validSigs[sig] = exists
 	}
 
-	http.HandleFunc("/login", handleLogin)
+	http.HandleFunc("/oauth2/sign_in", handleLogin)
 
-	http.HandleFunc("/callback", handleCallback)
+	http.HandleFunc("/oauth2/callback", handleCallback)
 
 	// does dynamic url routing
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
