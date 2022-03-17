@@ -26,6 +26,12 @@ type POSTREQ struct {
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
 
+	// create file if it does not exist
+	if _, err := os.Stat(FILENAME); err != nil {
+		_, err = os.Create(FILENAME)
+		L.Check(err)
+	}
+
 	var attendeeList []POSTREQ
 
 	file, err := os.Open(FILENAME)
@@ -38,8 +44,6 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		// fmt.Fprintf(w, "%v", attendeeList)
-
 		for i := range attendeeList {
 			fmt.Fprintf(w, "%v\n", attendeeList[i])
 		}
@@ -47,11 +51,13 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 
 		var getPost POSTREQ
 
+		// decode json from request body of POST request
 		err := json.NewDecoder(r.Body).Decode(&getPost)
 		L.Check(err)
 
 		defer r.Body.Close()
 
+		// append POST request to attendeeList
 		attendeeList = append(attendeeList, POSTREQ{
 			Sig:  getPost.Sig,
 			Ucid: getPost.Ucid,
@@ -62,18 +68,12 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 		data, err := json.Marshal(attendeeList)
 		L.Check(err)
 
+		// code to overwrite file
 		f, err := os.OpenFile(FILENAME, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 		L.Check(err)
 
+		// write to file (being overwritten)
 		f.Write(data)
-
-		// fmt.Fprintf(w, "%s", string(data))
-
-		// encoder := json.NewEncoder(file)
-		// encoder.Encode((&attendeeList))
-
-		// err := ioutil.WriteFile(FILENAME, []byte(attendeeList))
-		// L.Check(err)
 
 	default:
 		fmt.Fprintf(w, "Error!")
@@ -84,7 +84,7 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 	/*
 		ex:
 		handleGen:
-		http://localhost:9998/gen?sig=swe
+		http://localhost:10233/gen?sig=swe
 	*/
 
 	// enable cors

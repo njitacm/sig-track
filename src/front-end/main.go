@@ -39,7 +39,9 @@ var (
 )
 
 type POSTREQ struct {
-	Sig, Ucid, Time string
+	Sig  string `json:"sig"`
+	Ucid string `json:"ucid"`
+	Time string `json:"time"`
 }
 
 type Template struct {
