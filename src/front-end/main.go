@@ -29,7 +29,8 @@ const (
 
 var (
 	google0authConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:10234/callback",
+		// RedirectURL:  "http://localhost:10234/callback",
+		RedirectURL:  "http://sig-track.xyz/callback",
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
@@ -185,7 +186,8 @@ func main() {
 		// gets the sig from the url path
 		sig := r.URL.Path[1:]
 		if len(sig) == 0 {
-			tpl.ExecuteTemplate(w, "done", nil)
+			// root handler
+			tpl.ExecuteTemplate(w, "root", sigs)
 		}
 
 		// checks if sig in the set, if so the magic starts to begin

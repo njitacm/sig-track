@@ -50,9 +50,20 @@
 <head>
 {{template "headimports"}}
 </head>
-<body>
+<body class="text-center">
 {{template "bootstrap-body-js"}}
-
+<h2 style="padding-top: 2%;">Web Service to track sig attendance</h2>
+<br />
+<div class="text-center">
+<h4>Current Sigs:</h4>
+<br />
+{{range .}}
+<div class="list-group text-center" style="transform: translate(150%, 0%);max-width: 25%;">
+<a href="/{{.}}" class="list-group-item list-group-item-action list-group-item-info">{{.}}</a>
+</div>
+<br />
+{{end}}
+</div>
 {{template "foot"}}
 </body>
 </html>
