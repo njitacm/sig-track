@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"encoding/base32"
@@ -134,11 +135,11 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(checkIn)
 
-	// json_data, err := json.Marshal(checkIn)
-	// Check(err)
+	json_data, err := json.Marshal(checkIn)
+	Check(err)
 
-	// resp, err = http.Post(BENDPOINT, "application/json", bytes.NewBuffer(json_data))
-	// Check(err)
+	_, err = http.Post(BENDPOINT, "application/json", bytes.NewBuffer(json_data))
+	Check(err)
 
 	fmt.Println()
 

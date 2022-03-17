@@ -7,7 +7,7 @@ Tracks attendance for sig-meetings (with little overhead)
 - Prereqs:
     - Be sure to add `valid-sigs.json` in `/src/front-end` with a json string slice with the name of the sig ex. [ "swe", "algo", "sec" ] 
     - Be sure to have `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` & `SESSION_KEY` as env variables!
-
+    
 ```sh
 # Change directory to repo 
 cd sig-track
