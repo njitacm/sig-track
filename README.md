@@ -30,7 +30,7 @@ make
 
 ## :microscope: Technologies
 - Languages: `go`, `html`, `css`, `sh`
-- Packages: `make`
+- Packages: `make`, `oauth2-proxy`?, `nginx`
 
 ## :card_file_box: Directory Explanation
 | Directory      | Explanation
@@ -40,6 +40,7 @@ make
 
 
 ## :blue_book: Technical Details
+- `make` compiles go executable to `<file>.o` (to make running the executable file the same on all Operating Systems -> probably should fix but whatevs)
 
 ## :books: Resources
 - oauth2
@@ -56,3 +57,5 @@ make
 - Sessions
     - [Go Sessions](https://gowebexamples.com/sessions/)
     - [Gorilla Sessions](https://github.com/gorilla/sessions)
+- oauth2-proxy
+    - [Oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/)

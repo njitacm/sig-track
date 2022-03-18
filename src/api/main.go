@@ -15,7 +15,7 @@ const (
 	PORT      = 10233
 	BENDPOINT = "ec2-3-21-33-128.us-east-2.compute.amazonaws.com"
 	// FENDPOINT = "http://localhost:10234"
-	FENDPOINT = "http://147.182.190.27"
+	FENDPOINT = "http://sig-track.xyz"
 	FILENAME  = "attendeeList.json"
 )
 
