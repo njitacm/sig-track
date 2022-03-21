@@ -3,6 +3,8 @@
 ## :memo: Description
 Tracks attendance for sig-meetings (with little overhead)
 
+Try it out at: http://sig-track.xyz/
+
 ## :hammer: How to Build
 - Prereqs:
     - Be sure to add `valid-sigs.json` in `/src/front-end` with a json string slice with the name of the sig ex. [ "swe", "algo", "sec" ] 
