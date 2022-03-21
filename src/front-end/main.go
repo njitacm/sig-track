@@ -29,8 +29,8 @@ const (
 
 var (
 	google0authConfig = &oauth2.Config{
-		RedirectURL: "http://localhost:10234/oauth2/callback", // Local Testing
-		// RedirectURL:  "https://sig-track.xyz/oauth2/callback", // Server Production
+		// RedirectURL: "http://localhost:10234/oauth2/callback", // Local Testing
+		RedirectURL:  "https://sig-track.xyz/oauth2/callback", // Server Production
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
@@ -41,9 +41,10 @@ var (
 )
 
 type POSTREQ struct {
-	Sig  string `json:"sig"`
-	Ucid string `json:"ucid"`
-	Time string `json:"time"`
+	Sig     string `json:"sig"`
+	Ucid    string `json:"ucid"`
+	Time    string `json:"time"`
+	Meeting string `json:"meeting"`
 }
 
 type Template struct {
@@ -130,12 +131,14 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 	// convert email to string from any type
 	email := fmt.Sprintf("%s", res["email"])
+	meeting := r.URL.Query().Get("meeting")
 
 	// parse info into lovely data structure
 	checkIn := POSTREQ{
-		Sig:  sig,
-		Ucid: email[:strings.Index(email, "@")],
-		Time: time.Now().UTC().Format(time.UnixDate),
+		Sig:     sig,
+		Ucid:    email[:strings.Index(email, "@")],
+		Time:    time.Now().UTC().Format(time.UnixDate),
+		Meeting: meeting,
 	}
 
 	fmt.Println(checkIn)

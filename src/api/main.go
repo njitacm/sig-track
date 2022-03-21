@@ -14,15 +14,16 @@ import (
 const (
 	PORT      = 10233
 	BENDPOINT = "ec2-3-21-33-128.us-east-2.compute.amazonaws.com"
-	// FENDPOINT = "http://localhost:10234"
-	FENDPOINT = "http://sig-track.xyz"
+	// FENDPOINT = "http://localhost:10234" // local
+	FENDPOINT = "http://sig-track.xyz" // production
 	FILENAME  = "attendeeList.json"
 )
 
 type POSTREQ struct {
-	Sig  string `json:"sig"`
-	Ucid string `json:"ucid"`
-	Time string `json:"time"`
+	Sig     string `json:"sig"`
+	Ucid    string `json:"ucid"`
+	Time    string `json:"time"`
+	Meeting string `json:"meeting"`
 }
 
 func handleRoot(w http.ResponseWriter, r *http.Request) {
@@ -60,9 +61,10 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 
 		// append POST request to attendeeList
 		attendeeList = append(attendeeList, POSTREQ{
-			Sig:  getPost.Sig,
-			Ucid: getPost.Ucid,
-			Time: getPost.Time,
+			Sig:     getPost.Sig,
+			Ucid:    getPost.Ucid,
+			Time:    getPost.Time,
+			Meeting: getPost.Meeting,
 		})
 
 		// convert attendeeList to []byte to write to attendeeList.json
@@ -95,10 +97,11 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		q := r.URL.Query()
 		sig := q.Get("sig")
+		meeting := q.Get("meeting")
 		if len(sig) == 0 {
 			fmt.Fprintf(w, "error in query, must have `sig={sig-name}`")
 		}
-		image := L.QRCodeGen(fmt.Sprintf("%s/%s", FENDPOINT, sig))
+		image := L.QRCodeGen(fmt.Sprintf("%s/%s?meeting=%s", FENDPOINT, sig, meeting))
 		w.Write(image)
 	case "POST":
 		var res map[string]string
@@ -106,7 +109,8 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 		err := decoder.Decode(&res)
 		L.Check(err)
 		sig := res["sig"]
-		image := L.QRCodeGen(fmt.Sprintf("%s/%s", FENDPOINT, sig))
+		meeting := res["meeting"]
+		image := L.QRCodeGen(fmt.Sprintf("%s/%s?meeting=%s", FENDPOINT, sig, meeting))
 		w.Write(image)
 	default:
 		fmt.Fprintf(w, "No support yet!")
