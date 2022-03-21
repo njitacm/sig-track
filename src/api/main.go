@@ -15,7 +15,7 @@ const (
 	PORT      = 10233
 	BENDPOINT = "ec2-3-21-33-128.us-east-2.compute.amazonaws.com"
 	// FENDPOINT = "http://localhost:10234" // local
-	FENDPOINT = "http://sig-track.xyz" // production
+	FENDPOINT = "https://sig-track.xyz" // production
 	FILENAME  = "attendeeList.json"
 )
 
@@ -50,7 +50,6 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "%v\n", attendeeList[i])
 		}
 	case "POST":
-
 		var getPost POSTREQ
 
 		// decode json from request body of POST request
@@ -87,7 +86,7 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 	/*
 		ex:
 		handleGen:
-		http://localhost:10233/gen?sig=swe
+		http://localhost:10233/gen?sig=swe&meeting=7
 	*/
 
 	// enable cors
@@ -101,6 +100,7 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 		if len(sig) == 0 {
 			fmt.Fprintf(w, "error in query, must have `sig={sig-name}`")
 		}
+		// fmt.Println(fmt.Sprintf("%s/%s?meeting=%s", FENDPOINT, sig, meeting))
 		image := L.QRCodeGen(fmt.Sprintf("%s/%s?meeting=%s", FENDPOINT, sig, meeting))
 		w.Write(image)
 	case "POST":

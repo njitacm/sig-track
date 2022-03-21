@@ -131,7 +131,7 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 	// convert email to string from any type
 	email := fmt.Sprintf("%s", res["email"])
-	meeting := r.URL.Query().Get("meeting")
+	meeting := fmt.Sprintf("%s", res["meeting"])
 
 	// parse info into lovely data structure
 	checkIn := POSTREQ{
