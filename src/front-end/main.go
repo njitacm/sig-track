@@ -104,6 +104,12 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+	meeting, ok := session.Values["meeting"].(string)
+	if !ok {
+		fmt.Fprintf(w, "couldn't get session")
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
 
 	var res map[string]interface{}
 
@@ -131,7 +137,6 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 	// convert email to string from any type
 	email := fmt.Sprintf("%s", res["email"])
-	meeting := fmt.Sprintf("%s", res["meeting"])
 
 	// parse info into lovely data structure
 	checkIn := POSTREQ{
@@ -190,6 +195,7 @@ func main() {
 
 		// gets the sig from the url path
 		sig := r.URL.Path[1:]
+		meeting := r.URL.Query().Get("meeting")
 		if len(sig) == 0 {
 			// root handler
 			tpl.ExecuteTemplate(w, "root", sigs)
@@ -204,11 +210,13 @@ func main() {
 
 			// Adds key:sig = value:sig in session
 			session.Values["sig"] = sig
+			session.Values["meeting"] = meeting
 			// Saves session
 			session.Save(r, w)
 
 			vals := Template{
-				Sig:     sig,
+				Sig: sig,
+
 				Favicon: "http://jerseyctf.com/assets/img/white_hollow_acm.png",
 			}
 			tpl.ExecuteTemplate(w, "attendance", vals)
