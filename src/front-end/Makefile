@@ -1,5 +1,5 @@
 SHELL=/bin/bash
-BUILDFILE=main.try.go
+BUILDFILE=main.go
 OUTFILE=main.o
 
 all: run
