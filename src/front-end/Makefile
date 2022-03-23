@@ -1,13 +1,13 @@
 SHELL=/bin/bash
-BUILDFILE=main.go
+BUILDFILE=main.try.go
 OUTFILE=main.o
 
 all: run
 
 getenvid := "os.Getenv(\"GOOGLE_CLIENT_ID\")"
 clientid := "\"`printenv GOOGLE_CLIENT_ID`\""
-getenvsecret := "os.Getenv(\"GOOGLE_CLIENT_ID\")"
-clientsecret := `printenv GOOGLE_CLIENT_SECRET`
+getenvsecret := "os.Getenv(\"GOOGLE_CLIENT_SECRET\")"
+clientsecret := "\"`printenv GOOGLE_CLIENT_SECRET`\""
 
 compile:
 	@go build -o $(OUTFILE) $(BUILDFILE)
@@ -22,6 +22,6 @@ prod: compile
 	@sed -i -e s/$(getenvsecret)/$(clientsecret)/g $(BUILDFILE)
 
 clean:
-ifneq (,$(wildcard ./main.o))
-	@rm ./main.o
+ifneq (,$(wildcard ./$(OUTFILE)))
+	@rm ./$(OUTFILE)
 endif
