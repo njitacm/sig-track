@@ -15,11 +15,12 @@ compile:
 run: compile
 	@./main.o
 
-prod: compile
+prod:
 # Replace CLIENT_ID with Hardcoded String
 	@sed -i -e s/$(getenvid)/$(clientid)/g $(BUILDFILE)
 # Replace CLIENT_SECRET with Hardcoded String
 	@sed -i -e s/$(getenvsecret)/$(clientsecret)/g $(BUILDFILE)
+	@go build -o $(OUTFILE) $(BUILDFILE)
 
 clean:
 ifneq (,$(wildcard ./$(OUTFILE)))
