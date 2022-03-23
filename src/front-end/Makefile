@@ -1,4 +1,5 @@
 SHELL=/bin/bash
+BUILDFILE=main.go
 OUTFILE=main.o
 
 all: run
@@ -9,16 +10,16 @@ getenvsecret := "os.Getenv(\"GOOGLE_CLIENT_ID\")"
 clientsecret := `printenv GOOGLE_CLIENT_SECRET`
 
 compile:
-	@go build -o $(OUTFILE) main.go
+	@go build -o $(OUTFILE) $(BUILDFILE)
 
 run: compile
 	@./main.o
 
 prod: compile
-	@echo $(getenvid)
-	@echo $(clientid)
-	@sed -i -e s/$(getenvid)/$(clientid)/g $(OUTFILE)
-	@sed -i -e s/$(getenvsecret)/$(clientsecret)/g $(OUTFILE) 
+# Replace CLIENT_ID with Hardcoded String
+	@sed -i -e s/$(getenvid)/$(clientid)/g $(BUILDFILE)
+# Replace CLIENT_SECRET with Hardcoded String
+	@sed -i -e s/$(getenvsecret)/$(clientsecret)/g $(BUILDFILE)
 
 clean:
 ifneq (,$(wildcard ./main.o))
