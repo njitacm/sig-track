@@ -104,6 +104,8 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+
+	// Get meeting value from session cookie
 	meeting, ok := session.Values["meeting"].(string)
 	if !ok {
 		fmt.Fprintf(w, "couldn't get session")
@@ -215,8 +217,7 @@ func main() {
 			session.Save(r, w)
 
 			vals := Template{
-				Sig: sig,
-
+				Sig:     sig,
 				Favicon: "http://jerseyctf.com/assets/img/white_hollow_acm.png",
 			}
 			tpl.ExecuteTemplate(w, "attendance", vals)
