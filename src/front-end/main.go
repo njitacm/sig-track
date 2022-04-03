@@ -183,6 +183,7 @@ func main() {
 		validSigs[sig] = exists
 	}
 
+	// route handling
 	http.HandleFunc("/oauth2/sign_in", handleLogin)
 
 	http.HandleFunc("/oauth2/callback", handleCallback)
