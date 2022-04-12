@@ -7,8 +7,12 @@ Try it out at: http://sig-track.xyz/
 
 ## :hammer: How to Build
 - Prereqs:
-    - Be sure to add `valid-sigs.json` in `/src/front-end` with a json string slice with the name of the sig ex. [ "swe", "algo", "sec" ] 
-    - Be sure to have `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` & `SESSION_KEY` as env variables!
+    - Create `valid-sigs.json` file in `/src/front-end` with a json string slice with the name of the sig 
+        - ex. `[ "swe", "algo", "sec" ]` 
+    - Create an `.env` file in `src/front-end` with the following values:
+        - `GOOGLE_CLIENT_ID`
+        - `GOOGLE_CLIENT_SECRET`
+        - `SESSION_KEY`
     
 ```sh
 # Change directory to repo 

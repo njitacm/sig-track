@@ -20,6 +20,8 @@ import (
 	"golang.org/x/oauth2/google"
 
 	"github.com/gorilla/sessions"
+
+	"github.com/joho/godotenv"
 )
 
 const (
@@ -39,6 +41,15 @@ var (
 	randomState = getToken(12)
 	store       = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 )
+
+// init: function that get's called on initialization
+func init() {
+	// loads the .env file
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
 
 type POSTREQ struct {
 	Sig     string `json:"sig"`
@@ -183,6 +194,7 @@ func main() {
 		validSigs[sig] = exists
 	}
 
+	// route handling
 	http.HandleFunc("/oauth2/sign_in", handleLogin)
 
 	http.HandleFunc("/oauth2/callback", handleCallback)
