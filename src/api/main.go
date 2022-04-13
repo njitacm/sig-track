@@ -46,9 +46,8 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "GET":
-		for i := range attendeeList {
-			fmt.Fprintf(w, "%v\n", attendeeList[i])
-		}
+		enc := json.NewEncoder(w)
+		enc.Encode(attendeeList)
 	case "POST":
 		var getPost POSTREQ
 

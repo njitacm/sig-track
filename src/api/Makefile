@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 
-all: run
+all: compile
 
 compile:
 	@go build -o main.o main.go
