@@ -47,6 +47,7 @@ func handleRoot(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		enc := json.NewEncoder(w)
+		enc.SetIndent("", "    ")
 		enc.Encode(attendeeList)
 	case "POST":
 		var getPost POSTREQ
