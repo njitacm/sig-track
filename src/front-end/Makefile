@@ -4,6 +4,7 @@ OUTFILE=main.o
 
 all: compile
 
+
 compile:
 	@go build -o $(OUTFILE) $(BUILDFILE)
 

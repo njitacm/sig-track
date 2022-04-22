@@ -26,7 +26,6 @@ import (
 
 const (
 	PORT      = 10234
-	BENDPOINT = "http://ec2-3-21-33-128.us-east-2.compute.amazonaws.com"
 )
 
 var (
@@ -164,7 +163,7 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 	json_data, err := json.Marshal(checkIn)
 	Check(err)
 
-	_, err = http.Post(BENDPOINT, "application/json", bytes.NewBuffer(json_data))
+	_, err = http.Post(os.Getenv("BENDPOINT"), "application/json", bytes.NewBuffer(json_data))
 	Check(err)
 
 	tpl.ExecuteTemplate(w, "done", nil)
