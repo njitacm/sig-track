@@ -12,8 +12,7 @@ import (
 )
 
 const (
-	PORT      = 10233
-	BENDPOINT = "ec2-3-21-33-128.us-east-2.compute.amazonaws.com"
+	PORT = 10233
 	// FENDPOINT = "http://localhost:10234" // local
 	FENDPOINT = "https://sig-track.xyz" // production
 	FILENAME  = "attendeeList.json"
@@ -26,7 +25,7 @@ type POSTREQ struct {
 	Meeting string `json:"meeting"`
 }
 
-func handleRoot(w http.ResponseWriter, r *http.Request) {
+func handleList(w http.ResponseWriter, r *http.Request) {
 
 	// create file if it does not exist
 	if _, err := os.Stat(FILENAME); err != nil {
@@ -120,8 +119,10 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 func main() {
 	port := strconv.Itoa(PORT)
 
-	http.HandleFunc("/", handleRoot)
+	http.HandleFunc("/", handleList)
 	http.HandleFunc("/gen", handleGen)
+	http.HandleFunc("/list", handleList)
+	http.HandleFunc("/stats", handleList)
 
 	fmt.Printf("http://localhost:%s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
