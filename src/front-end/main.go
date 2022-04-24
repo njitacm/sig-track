@@ -25,20 +25,12 @@ import (
 )
 
 const (
-	PORT      = 10234
+	PORT = 10234
 )
 
 var (
-	google0authConfig = &oauth2.Config{
-		// RedirectURL: "http://localhost:10234/oauth2/callback", // Local Testing
-		RedirectURL:  "https://sig-track.xyz/oauth2/callback", // Server Production
-		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
-		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
-		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
-		Endpoint:     google.Endpoint,
-	}
-	randomState = getToken(12)
 	store       = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	randomState = getToken(12)
 )
 
 // init: function that get's called on initialization
@@ -59,6 +51,17 @@ type POSTREQ struct {
 
 type Template struct {
 	Sig, Favicon string
+}
+
+func GOOGLE0authConfigFunc() *oauth2.Config {
+	return &oauth2.Config{
+		RedirectURL: "http://localhost:10234/oauth2/callback", // Local Testing
+		// RedirectURL:  "https://sig-track.xyz/oauth2/callback", // Server Production
+		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
+		Endpoint:     google.Endpoint,
+	}
 }
 
 func EnableCors(w *http.ResponseWriter) {
@@ -92,6 +95,7 @@ func CheckHandler(err error, errMsg string, w http.ResponseWriter, r *http.Reque
 // handleLogin: does the google oauth2 authorization
 func handleLogin(w http.ResponseWriter, r *http.Request) {
 	EnableCors(&w)
+	google0authConfig := GOOGLE0authConfigFunc()
 	url := google0authConfig.AuthCodeURL(randomState)
 	http.Redirect(w, r, url, http.StatusTemporaryRedirect)
 }
@@ -104,6 +108,7 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 	// enable cors
 	EnableCors(&w)
+	// store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
 	session, err := store.Get(r, "session-name")
 	Check(err)
 
@@ -132,6 +137,7 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// get token from oauth2 jazz
+	google0authConfig := GOOGLE0authConfigFunc()
 	token, err := google0authConfig.Exchange(context.Background(), r.FormValue("code"))
 	CheckHandler(err, "getting token", w, r)
 
