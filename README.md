@@ -14,7 +14,7 @@ Try it out at: http://sig-track.xyz/
         - `GOOGLE_CLIENT_SECRET`
         - `SESSION_KEY`
         - `BENDPOINT`
-    
+        - `TYPE`
 ```sh
 # Change directory to repo 
 cd sig-track
@@ -37,32 +37,14 @@ make
 
 ## :microscope: Technologies
 - Languages: `go`, `html`, `css`, `sh`
-- Packages: `make`, `oauth2-proxy`?, `nginx`
+- Packages: `make`, `nginx`
 
 ## :card_file_box: Directory Explanation
-| Directory      | Explanation
-| :-------:      | :-----:
-| [infra](infra) | Infrastructure Configuration
-| [src](src)     | Source Code for front-end and api services
+| Directory          | Explanation
+| :-------:          | :-----:
+| [configs](configs) | Infrastructure Configuration
+| [src](src)         | Source Code for front-end and api services
 
 
 ## :blue_book: Technical Details
-- `make` compiles go executable to `<file>.o` (to make running the executable file the same on all Operating Systems -> probably should fix but whatevs)
-
-## :books: Resources
-- oauth2
-    - **[getting-started-with-oauth2](https://www.youtube.com/watch?v=OdyXIi6DGYw)**  <-- BEST
-    - [authentication-authorization-in-oauth2:golang](https://www.youtube.com/watch?v=Vmi3trk0rCk)
-    - [getting-started,code walkthrough](https://www.youtube.com/watch?v=PdpQJsR-BpE)
-- URL Dyno Routing
-    - [Effective Go: Writing Web Applications](https://go.dev/doc/articles/wiki/)
-- Go Env Variables
-    - [gobyexample: env vars](https://gobyexample.com/environment-variables)
-- url parsing
-    - [gobyexample: url parse](https://gobyexample.com/url-parsing)
-    - [Parsing Queries](https://www.youtube.com/watch?v=cl7_ouTMFh0)
-- Sessions
-    - [Go Sessions](https://gowebexamples.com/sessions/)
-    - [Gorilla Sessions](https://github.com/gorilla/sessions)
-- oauth2-proxy
-    - [Oauth2-proxy](https://oauth2-proxy.github.io/oauth2-proxy/)
+- Check out the [Wiki](https://github.com/njitacm/sig-track/wiki)

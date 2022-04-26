@@ -54,9 +54,22 @@ type Template struct {
 }
 
 func GOOGLE0authConfigFunc() *oauth2.Config {
+
+	var redirectURL string
+
+	redirectType := os.Getenv("TYPE")
+
+	switch strings.ToLower(redirectType) {
+	case "test":
+		redirectURL = "http://localhost:10234/oauth2/callback"
+	case "prod":
+		redirectURL = "https://sig-track.xyz/oauth2/callback"
+	default:
+		redirectURL = "http://localhost:10234/oauth2/callback"
+	}
+
 	return &oauth2.Config{
-		RedirectURL: "http://localhost:10234/oauth2/callback", // Local Testing
-		// RedirectURL:  "https://sig-track.xyz/oauth2/callback", // Server Production
+		RedirectURL:  redirectURL,
 		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
 		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
