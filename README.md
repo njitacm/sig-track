@@ -3,7 +3,7 @@
 ## :memo: Description
 Tracks attendance for sig-meetings (with little overhead)
 
-Try it out at: http://sig-track.xyz/
+Try it out at: http://sig-track.com/
 
 ## :hammer: How to Build
 - Prereqs:

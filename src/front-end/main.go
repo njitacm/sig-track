@@ -63,7 +63,7 @@ func GOOGLE0authConfigFunc() *oauth2.Config {
 	case "test":
 		redirectURL = "http://localhost:10234/oauth2/callback"
 	case "prod":
-		redirectURL = "https://sig-track.xyz/oauth2/callback"
+		redirectURL = "https://sig-track.com/oauth2/callback"
 	default:
 		redirectURL = "http://localhost:10234/oauth2/callback"
 	}

@@ -14,7 +14,7 @@ import (
 const (
 	PORT = 10233
 	// FENDPOINT = "http://localhost:10234" // local
-	FENDPOINT = "https://sig-track.xyz" // production
+	FENDPOINT = "https://sig-track.com" // production
 	FILENAME  = "attendeeList.json"
 )
 
