@@ -36,7 +36,7 @@ var (
 // init: function that get's called on initialization
 func init() {
 	// loads the .env file
-	err := godotenv.Load(".env")
+	err := godotenv.Load("../.env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -186,8 +186,7 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 		Check(err)
 
 		tpl.ExecuteTemplate(w, "done", nil)
-	}
-	else{
+	} else{
 		tpl.ExecuteTemplate(w, "bademail", nil)
 	}
 

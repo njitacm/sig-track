@@ -8,13 +8,20 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/joho/godotenv"
 	L "github.com/njitacm/sig-track/src/api/util"
 )
 
+func init() {
+	// loads the .env file
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
+
 const (
 	PORT = 10233
-	// FENDPOINT = "http://localhost:10234" // local
-	FENDPOINT = "https://sig-track.com" // production
 	FILENAME  = "attendeeList.json"
 )
 
@@ -26,7 +33,6 @@ type POSTREQ struct {
 }
 
 func handleList(w http.ResponseWriter, r *http.Request) {
-
 	// create file if it does not exist
 	if _, err := os.Stat(FILENAME); err != nil {
 		_, err = os.Create(FILENAME)
@@ -87,6 +93,7 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 		handleGen:
 		http://localhost:10233/gen?sig=swe&meeting=7
 	*/
+	fendpoint:=os.Getenv("FENDPOINT")
 
 	// enable cors
 	L.EnableCors(&w)
@@ -99,8 +106,8 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 		if len(sig) == 0 {
 			fmt.Fprintf(w, "error in query, must have `sig={sig-name}`")
 		}
-		// fmt.Println(fmt.Sprintf("%s/%s?meeting=%s", FENDPOINT, sig, meeting))
-		image := L.QRCodeGen(fmt.Sprintf("%s/%s?meeting=%s", FENDPOINT, sig, meeting))
+		// fmt.Println(fmt.Sprintf("%s/%s?meeting=%s", fendpoint, sig, meeting))
+		image := L.QRCodeGen(fmt.Sprintf("%s/%s?meeting=%s", fendpoint, sig, meeting))
 		w.Write(image)
 	case "POST":
 		var res map[string]string
@@ -109,7 +116,7 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 		L.Check(err)
 		sig := res["sig"]
 		meeting := res["meeting"]
-		image := L.QRCodeGen(fmt.Sprintf("%s/%s?meeting=%s", FENDPOINT, sig, meeting))
+		image := L.QRCodeGen(fmt.Sprintf("%s/%s?meeting=%s", fendpoint, sig, meeting))
 		w.Write(image)
 	default:
 		fmt.Fprintf(w, "No support yet!")

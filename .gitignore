@@ -1,7 +1,6 @@
 # Custom .gitignore
-*.png
 *.o
-*.json
+attendeeList.json
 src/*/conf.go
 
 # Binaries for programs and plugins
