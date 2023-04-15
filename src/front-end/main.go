@@ -181,11 +181,15 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 	json_data, err := json.Marshal(checkIn)
 	Check(err)
+	if(email[strings.Index(email, "@")+1:]=="njit.edu"){
+		_, err = http.Post(os.Getenv("BENDPOINT"), "application/json", bytes.NewBuffer(json_data))
+		Check(err)
 
-	_, err = http.Post(os.Getenv("BENDPOINT"), "application/json", bytes.NewBuffer(json_data))
-	Check(err)
-
-	tpl.ExecuteTemplate(w, "done", nil)
+		tpl.ExecuteTemplate(w, "done", nil)
+	}
+	else{
+		tpl.ExecuteTemplate(w, "bademail", nil)
+	}
 
 }
 

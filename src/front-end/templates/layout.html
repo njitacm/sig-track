@@ -45,6 +45,93 @@
 </html>
 {{end}}
 
+{{block "bademail" .}}
+<html>
+<head>
+    {{template "headimports"}}
+    <style>
+        body {margin: 0 auto;}
+        .show {display: flex;justify-content: center;align-items: center;flex-flow: column;height: 85%;}
+    
+        .crossmark__circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #ff0000;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .crossmark {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 2;
+            stroke: #ff0000;
+            stroke-miterlimit: 10;
+            margin: 10% auto;
+            box-shadow: inset 0px 0px 0px #ff0000;
+            animation: fillred .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+
+        .crossmark__check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+
+        .cross__path {
+            stroke: #ffffff;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            transform-origin: 50% 50% 0;
+        }
+
+        .cross__path--right {
+            animation: 0.3s ease 0.8s normal forwards 1 running stroke;
+        }
+
+        .cross__path--left {
+            animation: 1s ease 0.8s normal forwards 1 running stroke;
+        }
+
+        @keyframes fillred {
+            100% {
+                box-shadow: inset 0px 0px 0px 30px #ff0000;
+            }
+
+        }
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    {{template "bootstrap-body-js"}}
+    <div class="show">
+        <h2><b>Please use your njit.edu email</b></h2>
+        <div style="padding: 2% 0%">
+        <a href="/oauth2/sign_in" class="btn btn-outline-primary"><span class="fa fa-google"></span> Sign In with Google</a>
+        </div>
+        <svg class="crossmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+            <circle class="crossmark__circle" cx="26" cy="26" r="25" fill="none" />
+            <path class="cross__path cross__path--right" fill="none" d="M16,16 l20,20" />
+            <path class="cross__path cross__path--left" fill="none" d="M16,36 l20,-20" />
+        </svg>
+
+    </div>
+    <html>
+    <head>
+        {{template "foot"}}
+</body>
+</html>
+{{end}}
+
 {{block "root" .}}
 <html>
 <head>
