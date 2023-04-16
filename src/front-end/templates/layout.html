@@ -8,9 +8,17 @@
 </head>
 <body style="text-align: center; margin: 0 auto;">
     {{template "bootstrap-body-js"}}
-    <div style="padding: 2% 0%; height: 85%;">
-        <h3 style="padding: 2% 0%">sig-{{.Sig}} attendance</h3>
-        <a href="/oauth2/sign_in" class="btn btn-outline-primary"><span class="fa fa-google"></span> Sign In with Google</a>
+    <div class="d-none d-lg-block">
+        <div style="padding: 2% 0%;">
+            <h3 style="padding: 2% 0%">sig-{{.Sig}} attendance</h3>
+            <a href="/oauth2/sign_in" class="btn btn-outline-primary" style="font-size:4vh"><span class="fa fa-google"></span> Sign In with Google</a>
+        </div>
+    </div>
+    <div class="d-lg-none">
+        <div style="padding: 2% 0%;">
+            <h3 style="padding: 2% 0%; font-size:10vw">sig-{{.Sig}} attendance</h3>
+            <a href="/oauth2/sign_in" class="btn btn-outline-primary" style="font-size:5vw"><span class="fa fa-google"></span> Sign In with Google</a>
+        </div>
     </div>
 {{template "foot"}}
 </body>
@@ -128,12 +136,20 @@
         @keyframes stroke {100% {stroke-dashoffset: 0;}}
     </style>
 </head>
-<body>
+<body style="text-align: center; margin: 0 auto;">
     {{template "bootstrap-body-js"}}
     <div class="show">
-        <h2><b>Please use your njit.edu email</b></h2>
-        <div style="padding: 2% 0%">
-        <a href="/oauth2/sign_in" class="btn btn-outline-primary"><span class="fa fa-google"></span> Sign In with Google</a>
+        <div class="d-none d-lg-block">
+            <div>
+                <h2 style="padding: 2% 0%; font-size:3vw"><b>Please use your NJIT email</b></h2>
+                <a href="/oauth2/sign_in" class="btn btn-outline-primary" style="font-size:4vh"><span class="fa fa-google"></span> Sign In with Google</a>
+            </div>
+        </div>
+        <div class="d-lg-none">
+            <div style="padding: 2% 0%;">
+                <h3 style="padding: 2% 0%; font-size:9vw">Please use your NJIT email</h3>
+                <a href="/oauth2/sign_in" class="btn btn-outline-primary" style="font-size:5vw"><span class="fa fa-google"></span> Sign In with Google</a>
+            </div>
         </div>
         <svg class="crossmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
             <circle class="crossmark__circle" cx="26" cy="26" r="25" fill="none" />
@@ -154,7 +170,8 @@
 <head>
 {{template "headimports"}}
 </head>
-<body class="text-center">
+<body>
+<div  class="text-center d-none d-lg-block">
 {{template "bootstrap-body-js"}}
 <h2 style="padding-top: 2%;">Web Service to track sig attendance</h2>
 <br />
@@ -168,7 +185,23 @@
 <br />
 {{end}}
 </div>
-{{template "foot"}}
+</div>
+    {{template "bootstrap-body-js"}}
+    <div class="text-center d-lg-none">
+    <h2 style="padding-top: 2%;font-size:7vw">Web Service to track sig attendance</h2>
+    <br />
+    <div class="text-center">
+    <h4 style="font-size: 5vw;">Current Sigs:</h4>
+    <br />
+    {{range .}}
+    <div class="list-group text-center" style="transform: translate(17%, 0%);max-width: 75%;">
+    <a href="/{{.}}" class="list-group-item list-group-item-action list-group-item-info" style="font-size:5vw">{{.}}</a>
+    </div>
+    <br />
+    {{end}}
+    </div>
+    </div>
+    {{template "foot"}}
 </body>
 </html>
 {{end}}
