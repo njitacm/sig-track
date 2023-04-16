@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/joho/godotenv"
 	L "github.com/njitacm/sig-track/src/api/util"
@@ -93,10 +94,20 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 		handleGen:
 		http://localhost:10233/gen?sig=swe&meeting=7
 	*/
-	fendpoint:=os.Getenv("FENDPOINT")
+	var fendpoint string
+	redirectType := os.Getenv("TYPE")
 
 	// enable cors
 	L.EnableCors(&w)
+
+	switch strings.ToLower(redirectType) {
+	case "test":
+		fendpoint = "http://localhost:10234"
+	case "prod":
+		fendpoint = "https://sig-track.com"
+	default:
+		fendpoint = "http://localhost:10234"
+	}
 
 	switch r.Method {
 	case "GET":

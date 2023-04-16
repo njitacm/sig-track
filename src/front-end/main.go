@@ -180,9 +180,23 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(checkIn)
 
 	json_data, err := json.Marshal(checkIn)
+
+	var bendpoint string
+	redirectType := os.Getenv("TYPE")
+
+
+	switch strings.ToLower(redirectType) {
+	case "test":
+		bendpoint = "http://localhost:10233"
+	case "prod":
+		bendpoint = "https://api.sig-track.com/"
+	default:
+		bendpoint = "http://localhost:10233"
+	}
+
 	Check(err)
 	if(email[strings.Index(email, "@")+1:]=="njit.edu"){
-		_, err = http.Post(os.Getenv("BENDPOINT"), "application/json", bytes.NewBuffer(json_data))
+		_, err = http.Post(bendpoint, "application/json", bytes.NewBuffer(json_data))
 		Check(err)
 
 		tpl.ExecuteTemplate(w, "done", nil)
