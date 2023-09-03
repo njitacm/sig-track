@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"crypto/rand"
 	"encoding/base32"
@@ -22,10 +21,12 @@ import (
 	"github.com/gorilla/sessions"
 
 	"github.com/joho/godotenv"
+	L "github.com/njitacm/sig-track/src/api/util"
 )
 
 const (
 	PORT = 10234
+	FILENAME  = "attendeeList.json"
 )
 
 var (
@@ -179,24 +180,51 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println(checkIn)
 
-	json_data, err := json.Marshal(checkIn)
-
-	var bendpoint string
-	redirectType := os.Getenv("TYPE")
+	// var bendpoint string
+	// redirectType := os.Getenv("TYPE")
 
 
-	switch strings.ToLower(redirectType) {
-	case "test":
-		bendpoint = "http://localhost:10233"
-	case "prod":
-		bendpoint = "https://api.sig-track.com/"
-	default:
-		bendpoint = "http://localhost:10233"
-	}
+	// switch strings.ToLower(redirectType) {
+	// case "test":
+	// 	bendpoint = "http://localhost:10233"
+	// case "prod":
+	// 	bendpoint = "https://api.sig-track.com/"
+	// default:
+	// 	bendpoint = "http://localhost:10233"
+	// }
 
 	Check(err)
 	if(email[strings.Index(email, "@")+1:]=="njit.edu"){
-		_, err = http.Post(bendpoint, "application/json", bytes.NewBuffer(json_data))
+		// create file if it does not exist
+		if _, err := os.Stat(FILENAME); err != nil {
+			_, err = os.Create(FILENAME)
+			L.Check(err)
+		}
+
+		var attendeeList []POSTREQ
+
+		file, err := os.Open(FILENAME)
+		L.Check(err)
+
+		defer file.Close()
+	
+		decoder := json.NewDecoder(file)
+		decoder.Decode(&attendeeList)
+
+		// append POST request to attendeeList
+		attendeeList = append(attendeeList, checkIn)
+
+
+		// convert attendeeList to []byte to write to attendeeList.json
+		data, err := json.Marshal(attendeeList)
+		L.Check(err)
+
+		// code to overwrite file
+		f, err := os.OpenFile(FILENAME, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
+		L.Check(err)
+
+		// write to file (being overwritten)
+		f.Write(data)
 		Check(err)
 
 		tpl.ExecuteTemplate(w, "done", nil)
