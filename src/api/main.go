@@ -33,61 +33,6 @@ type POSTREQ struct {
 	Meeting string `json:"meeting"`
 }
 
-func handleList(w http.ResponseWriter, r *http.Request) {
-	// create file if it does not exist
-	if _, err := os.Stat(FILENAME); err != nil {
-		_, err = os.Create(FILENAME)
-		L.Check(err)
-	}
-
-	var attendeeList []POSTREQ
-
-	file, err := os.Open(FILENAME)
-	L.Check(err)
-
-	defer file.Close()
-
-	decoder := json.NewDecoder(file)
-	decoder.Decode(&attendeeList)
-
-	switch r.Method {
-	case "GET":
-		enc := json.NewEncoder(w)
-		enc.SetIndent("", "    ")
-		enc.Encode(attendeeList)
-	case "POST":
-		var getPost POSTREQ
-
-		// decode json from request body of POST request
-		err := json.NewDecoder(r.Body).Decode(&getPost)
-		L.Check(err)
-
-		defer r.Body.Close()
-
-		// append POST request to attendeeList
-		attendeeList = append(attendeeList, POSTREQ{
-			Sig:     getPost.Sig,
-			Ucid:    getPost.Ucid,
-			Time:    getPost.Time,
-			Meeting: getPost.Meeting,
-		})
-
-		// convert attendeeList to []byte to write to attendeeList.json
-		data, err := json.Marshal(attendeeList)
-		L.Check(err)
-
-		// code to overwrite file
-		f, err := os.OpenFile(FILENAME, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
-		L.Check(err)
-
-		// write to file (being overwritten)
-		f.Write(data)
-
-	default:
-		fmt.Fprintf(w, "Error!")
-	}
-}
-
 func handleGen(w http.ResponseWriter, r *http.Request) {
 	/*
 		ex:
