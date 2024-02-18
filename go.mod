@@ -1,6 +1,6 @@
 module github.com/njitacm/sig-track2024
 
-go 1.21.5
+go 1.21
 
 require (
 	github.com/gorilla/sessions v1.2.2
