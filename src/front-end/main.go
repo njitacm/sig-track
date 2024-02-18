@@ -25,8 +25,8 @@ import (
 )
 
 const (
-	PORT = 10234
-	FILENAME  = "attendeeList.json"
+	PORT     = 10234
+	FILENAME = "attendeeList.json"
 )
 
 var (
@@ -183,7 +183,6 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 	// var bendpoint string
 	// redirectType := os.Getenv("TYPE")
 
-
 	// switch strings.ToLower(redirectType) {
 	// case "test":
 	// 	bendpoint = "http://localhost:10233"
@@ -194,7 +193,7 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 	// }
 
 	Check(err)
-	if(email[strings.Index(email, "@")+1:]=="njit.edu"){
+	if email[strings.Index(email, "@")+1:] == "njit.edu" {
 		// create file if it does not exist
 		if _, err := os.Stat(FILENAME); err != nil {
 			_, err = os.Create(FILENAME)
@@ -207,13 +206,12 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 		L.Check(err)
 
 		defer file.Close()
-	
+
 		decoder := json.NewDecoder(file)
 		decoder.Decode(&attendeeList)
 
 		// append POST request to attendeeList
 		attendeeList = append(attendeeList, checkIn)
-
 
 		// convert attendeeList to []byte to write to attendeeList.json
 		data, err := json.Marshal(attendeeList)
@@ -228,10 +226,15 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 		Check(err)
 
 		tpl.ExecuteTemplate(w, "done", nil)
-	} else{
+	} else {
 		tpl.ExecuteTemplate(w, "bademail", nil)
 	}
 
+}
+
+func handleStatic(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL.Path)
+	http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))).ServeHTTP(w, r)
 }
 
 // main: does routing and core logic
@@ -261,6 +264,8 @@ func main() {
 	http.HandleFunc("/oauth2/sign_in", handleLogin)
 
 	http.HandleFunc("/oauth2/callback", handleCallback)
+
+	http.HandleFunc("/static/", handleStatic)
 
 	// does dynamic url routing
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

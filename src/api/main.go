@@ -22,8 +22,8 @@ func init() {
 }
 
 const (
-	PORT = 10233
-	FILENAME  = "attendeeList.json"
+	PORT     = 10233
+	FILENAME = "attendeeList.json"
 )
 
 type POSTREQ struct {
@@ -82,10 +82,10 @@ func handleGen(w http.ResponseWriter, r *http.Request) {
 func main() {
 	port := strconv.Itoa(PORT)
 
-	http.HandleFunc("/", handleList)
+	//http.HandleFunc("/", handleList)
 	http.HandleFunc("/gen", handleGen)
-	http.HandleFunc("/list", handleList)
-	http.HandleFunc("/stats", handleList)
+	//http.HandleFunc("/list", handleList)
+	//http.HandleFunc("/stats", handleList)
 
 	fmt.Printf("http://localhost:%s\n", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
