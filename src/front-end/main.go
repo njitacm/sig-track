@@ -122,9 +122,13 @@ func handleCallback(w http.ResponseWriter, r *http.Request) {
 
 	// enable cors
 	EnableCors(&w)
-	// store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+
 	session, err := store.Get(r, "session-name")
-	Check(err)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	// Get sig value from session cookie
 	sig, ok := session.Values["sig"].(string)
@@ -289,7 +293,6 @@ func main() {
 			// starts up a session
 			session, err := store.Get(r, "session-name")
 			Check(err)
-
 			// Adds key:sig = value:sig in session
 			session.Values["sig"] = sig
 			session.Values["meeting"] = meeting

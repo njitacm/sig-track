@@ -1,4 +1,6 @@
 {{block "attendance" .}}
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="google-signin-client_id" content="146401917389-bbnlv62ati1hgu42ee3um6kuofg2o5ek.apps.googleusercontent.com">
 <html lang="en">
 <head>
     <title>sig-{{.Sig}}</title>
@@ -8,18 +10,47 @@
 </head>
 <body style="text-align: center; margin: 0 auto;">
     {{template "bootstrap-body-js"}}
-    <div class="d-none d-lg-block">
+    <!-- <div class="d-none d-lg-block">
         <div style="padding: 2% 0%;">
             <h3 style="padding: 2% 0%">sig-{{.Sig}} attendance</h3>
             <a href="/oauth2/sign_in" class="btn btn-outline-primary" style="font-size:4vh"><span class="fa fa-google"></span> Sign In with Google</a>
         </div>
-    </div>
-    <div class="d-lg-none">
+    </div> -->
+    <!-- <div class="d-lg-none">
         <div style="padding: 2% 0%;">
-            <h3 style="padding: 2% 0%; font-size:10vw">sig-{{.Sig}} attendance</h3>
+            <h3 style="padding: 2% 0%; font-size:10vw">sig-{{.Sig}} atzctendance</h3>
             <a href="/oauth2/sign_in" class="btn btn-outline-primary" style="font-size:5vw"><span class="fa fa-google"></span> Sign In with Google</a>
         </div>
-    </div>
+    </div> -->
+    <script>
+        function onSignIn(googleUser) {
+            console.log("Oh hey!")
+            var profile = googleUser.getBasicProfile();
+            console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+            console.log('Name: ' + profile.getName());
+            console.log('Image URL: ' + profile.getImageUrl());
+            console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+        }
+        function gp_signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log('User signed out.');
+        });
+}
+        function testCallback() {
+            console.log("Test");
+        }
+        window.onSignIn = onSignIn;
+        window.testCallback = testCallback;
+    </script>
+    <div style="height: 30%;"></div>
+    <h1>Sign Into This Sig</h1>
+    <div style="margin-left: auto; margin-right: auto; margin-top: auto; margin-bottom: auto; width: 8rem; height: 8rem;">
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <button style="height:20px;" data-onsuccess="testCallback"></button>
+        <a href="#" onclick="gp_signOut();">Sign out</a>
+
+    </div>        
 {{template "foot"}}
 </body>
 </html>
@@ -28,6 +59,7 @@
 {{block "done" .}}
 <html>
 <head>
+    <meta Cross>
 {{template "headimports"}}
 <style>
     body {margin: 0 auto;}
@@ -201,6 +233,7 @@
     {{end}}
     </div>
     </div>
+    <div style="height:150px"></div>
     {{template "foot"}}
 </body>
 </html>
